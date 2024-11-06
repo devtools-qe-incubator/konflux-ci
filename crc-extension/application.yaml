@@ -1,0 +1,44 @@
+apiVersion: appstudio.redhat.com/v1alpha1
+kind: Application
+metadata:
+  name: crc-extension-testing
+spec:
+  appModelRepository:
+    url: ""
+  displayName: crc-extension-testing
+  gitOpsRepository:
+    url: "https://github.com/devtools-qe-incubator/konflux-ci"
+    context: "crc-extension"
+---
+apiVersion: appstudio.redhat.com/v1alpha1
+kind: ImageRepository
+metadata:
+  labels:
+    appstudio.redhat.com/application: crc-extension-testing
+    appstudio.redhat.com/component: crc-extension-testing
+  name: imagerepository-for-crc-extension-testing-crc-extension-testing
+  namespace: rh-openshift-local-tenant
+spec:
+  image:
+    name: rh-openshift-local-tenant/crc-extension-testing/crc-extension-testing
+    visibility: public
+  notifications:
+  - config:
+      url: https://bombino.api.redhat.com/v1/sbom/quay/push
+    event: repo_push
+    method: webhook
+    title: SBOM-event-to-Bombino
+---
+apiVersion: appstudio.redhat.com/v1alpha1
+kind: Component
+metadata:
+  name: crc-extension-testing
+  namespace: rh-openshift-local-tenant
+spec:
+  application: crc-extension-testing
+  componentName: crc-extension-testing
+  containerImage: quay.io/redhat-user-workloads/rh-openshift-local-tenant/crc-extension-testing/crc-extension-testing
+  source:
+    git:
+      dockerfileUrl: oci/Containerfile.multistage
+      url: https://github.com/devtools-qe-incubator/crc-extension
