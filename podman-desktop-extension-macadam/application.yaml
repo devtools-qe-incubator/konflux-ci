@@ -1,0 +1,64 @@
+apiVersion: appstudio.redhat.com/v1alpha1
+kind: Application
+metadata:
+  name: podman-desktop-extension-macadam
+spec:
+  appModelRepository:
+    url: ""
+  displayName: podman-desktop-extension-macadam
+  gitOpsRepository:
+    url: "https://github.com/devtools-qe-incubator/konflux-ci"
+    context: "podman-desktop-extension-macadam"
+---
+apiVersion: appstudio.redhat.com/v1alpha1
+kind: ImageRepository
+metadata:
+  labels:
+    appstudio.redhat.com/application: podman-desktop-extension-macadam
+    appstudio.redhat.com/component: podman-desktop-extension-macadam
+  name: imagerepository-for-podman-desktop-extension-macadam
+  namespace: rh-openshift-local-tenant
+spec:
+  image:
+    name: rh-openshift-local-tenant/podman-desktop-extension-macadam/podman-desktop-extension-macadam
+    visibility: public
+  notifications:
+  - config:
+      url: https://bombino.api.redhat.com/v1/sbom/quay/push
+    event: repo_push
+    method: webhook
+    title: SBOM-event-to-Bombino
+---
+apiVersion: appstudio.redhat.com/v1alpha1
+kind: Component
+metadata:
+  name: podman-desktop-extension-macadam
+  namespace: rh-openshift-local-tenant
+spec:
+  application: podman-desktop-extension-macadam
+  componentName: podman-desktop-extension-macadam
+  containerImage: quay.io/redhat-user-workloads/rh-openshift-local-tenant/podman-desktop-extension-macadam/podman-desktop-extension-macadam
+  source:
+    git:
+      dockerfileUrl: oci/Containerfile.multistage
+      url: https://github.com/crc-org/podman-desktop-extension-macadam
+# ---
+# apiVersion: appstudio.redhat.com/v1beta2
+# kind: IntegrationTestScenario
+# metadata:
+#   name: crc-extension-e2e-windows
+#   namespace: rh-openshift-local-tenant
+# spec:
+#   application: crc-extension-testing
+#   contexts:
+#   - description: Application testing
+#     name: application
+#   resolverRef:
+#     params:
+#     - name: url
+#       value: https://github.com/devtools-qe-incubator/crc-extension
+#     - name: revision
+#       value: main
+#     - name: pathInRepo
+#       value: .tekton/integrationtestscenarios/e2e-windows.yaml
+#     resolver: git

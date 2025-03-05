@@ -42,3 +42,23 @@ spec:
     git:
       dockerfileUrl: oci/Containerfile.multistage
       url: https://github.com/devtools-qe-incubator/crc-extension
+---
+apiVersion: appstudio.redhat.com/v1beta2
+kind: IntegrationTestScenario
+metadata:
+  name: crc-extension-e2e-windows
+  namespace: rh-openshift-local-tenant
+spec:
+  application: crc-extension-testing
+  contexts:
+  - description: Application testing
+    name: application
+  resolverRef:
+    params:
+    - name: url
+      value: https://github.com/devtools-qe-incubator/crc-extension
+    - name: revision
+      value: main
+    - name: pathInRepo
+      value: .tekton/integrationtestscenarios/e2e-windows.yaml
+    resolver: git
