@@ -1,0 +1,27 @@
+---
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: mapt
+  labels:
+    app.kubernetes.io/component: rbac
+    app.kubernetes.io/part-of: mapt
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get", "list", "create", "update", "delete", "patch", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: mapt
+  labels:
+    app.kubernetes.io/component: rbac
+    app.kubernetes.io/part-of: mapt
+subjects:
+- kind: ServiceAccount
+  name: appstudio-pipeline
+roleRef:
+  kind: Role 
+  name: mapt
+  apiGroup: rbac.authorization.k8s.io
